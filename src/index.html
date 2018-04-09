@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Slidery</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="slider-group">
+        <div class='slider-item'>
+          <div class="slidery" data-range="100...500" id="slider-1" data-value="130"></div>
+        </div>
+        <div class="result">
+          <span class='slidery-target' data-source="slider-1" data-func="(window.ethDailyEarning || 1000)*x*365"></span>
+          /month
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class='slider-item'>
+          <div class="slidery"  id="slider-2"></div>
+        </div>
+      </div>
+      <div class="results">
+        <div class="result">
+          $<span class='slidery-target' data-source="slider-1" data-func="100*x"></span>
+        </div>
+        <div class="result">
+          <span class='slidery-target' data-source="slider-2"></span>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="slidery.js"></script>
+  </body>
+</html>
