@@ -136,6 +136,9 @@ class Slidery {
 
     document.body.classList.add('slidery-no-select-text')
     slider.nodes.liftNode.classList.add('slidery-is-sliding')
+    slider.targets.forEach(target => {
+      target.node.classList.add('slidery-is-sliding')
+    })
   }
   handleLiftNodeTouchStart = id => event => {
     const slider = this.sliders[id]
@@ -156,6 +159,9 @@ class Slidery {
 
     document.body.classList.add('slidery-no-select-text')
     slider.nodes.liftNode.classList.add('slidery-is-sliding')
+    slider.targets.forEach(target => {
+      target.node.classList.add('slidery-is-sliding')
+    })
   }
   handleMouseUp = id => event => {
     const activeSlider = this.activeSliders[id]
@@ -174,6 +180,9 @@ class Slidery {
     const slider = this.sliders[id]
     if (slider) {
       slider.nodes.liftNode.classList.remove('slidery-is-sliding')
+      slider.targets.forEach(target => {
+        target.node.classList.remove('slidery-is-sliding')
+      })
     }
   }
   handleTouchEnd = id => event => {
@@ -198,6 +207,9 @@ class Slidery {
     const slider = this.sliders[id]
     if (slider) {
       slider.nodes.liftNode.classList.remove('slidery-is-sliding')
+      slider.targets.forEach(target => {
+        target.node.classList.remove('slidery-is-sliding')
+      })
     }
   }
   handleMouseMove = id => {
