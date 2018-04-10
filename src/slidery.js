@@ -1,4 +1,3 @@
-import accounting from 'accounting'
 import './slidery.less'
 
 const initNodes = node => {
@@ -23,6 +22,14 @@ const initNodes = node => {
     wrapperNode.append(liftNode)
   }
   return { wrapperNode, baseNode, progressNode, liftNode }
+}
+
+const formatValue = (value, precision = 0, separator = '.') => {
+  const formattedValue = value.toFixed(precision)
+  if (separator !== '.') {
+    return formattedValue.replace('.', separator)
+  }
+  return formattedValue
 }
 
 const calculateValue = (x, func) => {
@@ -96,7 +103,7 @@ class Slidery {
       nodes.progressNode.style.width = `${liftPosition}px`
       targets.forEach(
         target =>
-          (target.node.innerHTML = accounting.formatNumber(
+          (target.node.innerHTML = formatValue(
             calculateValue(initialValue, target.func),
             target.precision,
             target.separator
@@ -253,7 +260,7 @@ class Slidery {
     }
     slider.targets.forEach(
       target =>
-        (target.node.innerHTML = accounting.formatNumber(
+        (target.node.innerHTML = formatValue(
           calculateValue(newValue / slider.scale, target.func),
           target.precision,
           target.separator
