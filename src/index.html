@@ -9,10 +9,10 @@
     <div class="container">
       <div class="slider-group">
         <div class='slider-item'>
-          <div class="slidery" data-range="100...500" id="slider-1" data-value="130"></div>
+          <div class="slidery" data-range="0...500" id="slider-1" data-value="130"></div>
         </div>
         <div class="result">
-          <span class='slidery-target' data-source="slider-1" data-func="(window.ethDailyEarning || 1000)*x*365"></span>
+          <span class='slidery-target' data-value="(window.ethDailyEarning || 1000) * [slider-1] * 365"></span>
           /month
         </div>
       </div>
@@ -23,10 +23,10 @@
       </div>
       <div class="results">
         <div class="result">
-          $<span class='slidery-target' data-source="slider-1" data-func="100*x"></span>
+          $<span class='slidery-target' data-value="100 * [slider-1]"></span>
         </div>
         <div class="result">
-          <span class='slidery-target' data-source="slider-2"></span>
+          <span class='slidery-target' data-value="(window.tempValue || [slider-2]) +  [slider-1]"></span>
         </div>
       </div>
     </div>

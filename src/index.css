@@ -11,6 +11,7 @@
 .slider-item {
   margin: 40px;
   width: 300px;
+  color: blue;
 }
 
 .results {
@@ -19,4 +20,7 @@
 .result {
   font-size: 20px;
   margin: 20px;
+}
+.result .slidery-is-sliding {
+  color: red;
 }
