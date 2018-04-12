@@ -32,16 +32,22 @@ const formatValue = (value, precision = 0, separator = '.') => {
   return formattedValue
 }
 
-const calculateValue = (x, func) => {
-  if (!func) {
-    return x
-  }
-  if (typeof func === 'string') {
-    return eval(func)
-  }
-  if (typeof func === 'function') {
-    return func(x)
-  }
+const funcIdRegExp = /\[[\w-_\.]+\]/gi
+const calculateValue = (func, sliders) => {
+  let funcWithValues = func.match(funcIdRegExp).reduce((tempFunc, match) => {
+    const id = match.replace(/\[?\]?/g, '')
+    const slider = sliders[id]
+    if (!slider) {
+      return tempFunc
+    }
+    const value =
+      slider.tempValue !== null && slider.tempValue !== undefined
+        ? slider.tempValue
+        : slider.value
+    return tempFunc.replace(match, value)
+  }, func)
+  funcWithValues = funcWithValues.replace(',', '.')
+  return eval(funcWithValues)
 }
 
 class Slidery {
@@ -62,8 +68,7 @@ class Slidery {
       .map(node => {
         return {
           node,
-          source: node.dataset.source,
-          func: node.dataset.func,
+          value: node.dataset.value,
           precision: node.dataset.precision || 0,
           separator: node.dataset.separator || ''
         }
@@ -75,7 +80,8 @@ class Slidery {
       const id = node.id || (Math.random() * 4000).toString()
       const width = node.getBoundingClientRect().width
       const targets = allTargets.filter(
-        ({ source }) => (source && source === id) || (!source && !node.id)
+        ({ value }) =>
+          (value && value.indexOf(id) !== -1) || (!value && !node.id)
       )
       const range =
         node.dataset.range && /\d+\.\.\.\d+/.test(node.dataset.range)
@@ -101,16 +107,9 @@ class Slidery {
       const liftPosition = scale * initialValue
       nodes.liftNode.style.left = `${liftPosition}px`
       nodes.progressNode.style.width = `${liftPosition}px`
-      targets.forEach(
-        target =>
-          (target.node.innerHTML = formatValue(
-            calculateValue(initialValue, target.func),
-            target.precision,
-            target.separator
-          ))
-      )
 
       this.sliders[id] = {
+        id,
         nodes,
         targets,
         width,
@@ -119,6 +118,10 @@ class Slidery {
         scale,
         value: initialValue * scale
       }
+    })
+
+    Object.values(this.sliders).forEach(slider => {
+      this.adjustTargets(slider.targets, slider.value)
     })
   }
 
@@ -187,6 +190,7 @@ class Slidery {
     const slider = this.sliders[id]
     if (slider) {
       slider.nodes.liftNode.classList.remove('slidery-is-sliding')
+      slider.tempValue = null
       slider.targets.forEach(target => {
         target.node.classList.remove('slidery-is-sliding')
       })
@@ -214,6 +218,7 @@ class Slidery {
     const slider = this.sliders[id]
     if (slider) {
       slider.nodes.liftNode.classList.remove('slidery-is-sliding')
+      slider.tempValue = null
       slider.targets.forEach(target => {
         target.node.classList.remove('slidery-is-sliding')
       })
@@ -244,6 +249,25 @@ class Slidery {
       this.adjustSlider(id, progress)
     }
   }
+  adjustTargets = (targets, newValue) => {
+    targets.forEach(target => {
+      if (target.node) {
+        if (target.value) {
+          target.node.innerHTML = formatValue(
+            calculateValue(target.value, this.sliders),
+            target.precision,
+            target.separator
+          )
+        } else {
+          target.node.innerHTML = formatValue(
+            newValue,
+            target.precision,
+            target.separator
+          )
+        }
+      }
+    })
+  }
   adjustSlider = (id, value, setNewValue = false) => {
     const slider = this.sliders[id]
     if (!slider) return
@@ -254,18 +278,12 @@ class Slidery {
 
     slider.nodes.liftNode.style.left = `${newValue}px`
     slider.nodes.progressNode.style.width = `${newValue}px`
+    slider.tempValue = newValue
 
     if (setNewValue) {
       slider.value = newValue
     }
-    slider.targets.forEach(
-      target =>
-        (target.node.innerHTML = formatValue(
-          calculateValue(newValue / slider.scale, target.func),
-          target.precision,
-          target.separator
-        ))
-    )
+    this.adjustTargets(slider.targets, newValue)
   }
 }
 
