@@ -9,11 +9,42 @@
     <div class="container">
       <div class="slider-group">
         <div class='slider-item'>
-          <div class="slidery" data-range="0...500" id="slider-1" data-value="130"></div>
+          <div class="slidery" data-range="0...500" id="slider-1" data-default-value="130"></div>
         </div>
         <div class="result">
-          <span class='slidery-target' data-value="(window.ethDailyEarning || 1000) * [slider-1] * 365"></span>
-          /month
+          <span class='slidery-target' data-value="[slider-1]"></span>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class='slider-item'>
+          <div class="slidery" data-range="-20...-600" id="slider-3"></div>
+        </div>
+        <div class="result">
+          <span class='slidery-target' data-value="[slider-3]"></span>
+        </div>
+      </div>
+      <div class="slider-group slider-group--green">
+        <div class='slider-item'>
+          <div class="slidery" data-range="-20...20" id="slider-4" ></div>
+        </div>
+        <div class="result">
+          <span class='slidery-target' data-value="[slider-4]"></span>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class='slider-item'>
+          <div class="slidery" data-range="-50...-5" id="slider-5" ></div>
+        </div>
+        <div class="result">
+          <span class='slidery-target' data-value="[slider-5]"></span>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class='slider-item'>
+          <div class="slidery" data-range="-80...0" id="slider-6" ></div>
+        </div>
+        <div class="result">
+          <span class='slidery-target' data-value="[slider-6]"></span>
         </div>
       </div>
       <div class="slider-group">

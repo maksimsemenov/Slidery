@@ -1,6 +1,8 @@
 .container {
   margin: 100px auto;
-  width: 600px;
+  width: calc(100% - 40px);
+  max-width: 800px;
+  min-width: 300px;
 }
 
 .slider-group {
@@ -10,8 +12,11 @@
 
 .slider-item {
   margin: 40px;
-  width: 300px;
+  width: 100%;
   color: blue;
+}
+.slider-group--green .slider-item {
+  color: green;
 }
 
 .results {
@@ -22,5 +27,8 @@
   margin: 20px;
 }
 .result .slidery-is-sliding {
-  color: red;
+  color: blue;
+}
+.slider-group--green .result .slidery-is-sliding {
+  color: green;
 }
