@@ -57,6 +57,11 @@ const calculateValue = (func, sliders) => {
   return eval(funcWithValues)
 }
 
+const getClosestStep = (value, range, stepsCount) => {
+  const step = range / stepsCount
+  return Math.round(value / step) * step
+}
+
 class Slidery {
   constructor(options = {}) {
     this.options = Object.assign(
@@ -133,6 +138,9 @@ class Slidery {
         width,
         range,
         scale,
+        stepsCount: node.dataset.steps
+          ? parseInt(node.dataset.steps, 10)
+          : undefined,
         value: initialValue,
         progress: initialProgress
       }
@@ -303,6 +311,8 @@ class Slidery {
     if (!slider) return
 
     let newProgress = progress
+    if (slider && slider.stepsCount)
+      newProgress = getClosestStep(progress, slider.width, slider.stepsCount)
     if (newProgress < 0) newProgress = 0
     if (newProgress > slider.width) newProgress = slider.width
 
