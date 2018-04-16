@@ -3,7 +3,8 @@ const webpack = require('webpack')
 
 module.exports = {
   entry: {
-    slidery: path.resolve(__dirname, './src/slidery.js')
+    slidery: path.resolve(__dirname, './src/slidery.js'),
+    index: path.resolve(__dirname, './src/index.js')
   },
   devtool: 'eval',
   output: {

@@ -57,10 +57,26 @@
           $<span class='slidery-target' data-value="100 * [slider-1]"></span>
         </div>
         <div class="result">
-          <span class='slidery-target' data-value="(window.tempValue || [slider-2]) +  [slider-1]"></span>
+          <span class='slidery-target' data-value="[slider-2] +  [slider-1] + [slider-1]"></span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="slider-group">
+        <div class='slider-item'>
+          <div class="slidery-custom" data-range="0...255" id="red" ></div>
+        </div>
+        <div class='slider-item'>
+          <div class="slidery-custom" data-range="0...255" id="blue" ></div>
+        </div>
+        <div class='slider-item'>
+          <div class="slidery-custom" data-range="0...255" id="green" ></div>
         </div>
       </div>
     </div>
     <script type="text/javascript" src="slidery.js"></script>
+    <script type="text/javascript" src="index.js"></script>
   </body>
 </html>
