@@ -13,18 +13,23 @@ const initNodes = node => {
   if (!baseNode) {
     baseNode = document.createElement('div')
     baseNode.classList.add('slidery-base')
-    wrapperNode.append(baseNode)
   }
+  const baseTargetNode = document.createElement('div')
+  baseTargetNode.classList.add('slidery-base__target')
+  baseNode.append(baseTargetNode)
+
   if (!progressNode) {
     progressNode = document.createElement('div')
     progressNode.classList.add('slidery-progress')
-    wrapperNode.append(progressNode)
   }
   if (!liftNode) {
     liftNode = document.createElement('div')
     liftNode.classList.add('slidery-lift')
-    wrapperNode.append(liftNode)
   }
+
+  wrapperNode.append(baseNode)
+  wrapperNode.append(progressNode)
+  wrapperNode.append(liftNode)
   return { wrapperNode, baseNode, progressNode, liftNode }
 }
 
