@@ -6,6 +6,10 @@ const initNodes = node => {
   let progressNode = wrapperNode.querySelector('.slidery-progress')
   let liftNode = wrapperNode.querySelector('.slidery-lift')
 
+  if (!wrapperNode.classList.contains('slidery')) {
+    wrapperNode.classList.add('slidery')
+  }
+
   if (!baseNode) {
     baseNode = document.createElement('div')
     baseNode.classList.add('slidery-base')
@@ -43,111 +47,193 @@ const debounce = (func, wait = 100) => {
   }
 }
 const funcIdRegExp = /\[[\w-_\.]+\]/gi
-const calculateValue = (func, sliders) => {
-  let funcWithValues = func.match(funcIdRegExp).reduce((tempFunc, match) => {
-    const id = match.replace(/\[?\]?/g, '')
-    const slider = sliders[id]
-    if (!slider) {
-      return tempFunc
-    }
-    const value = slider.value
-    return tempFunc.replace(match, value)
-  }, func)
-  funcWithValues = funcWithValues.replace(',', '.')
-  return eval(funcWithValues)
-}
 
 const getClosestStep = (value, range, stepsCount) => {
   const step = range / stepsCount
   return Math.round(value / step) * step
 }
 
-class Slidery {
-  constructor(options = {}) {
-    this.options = Object.assign(
-      {},
-      {
-        className: 'slidery',
-        targetClassName: 'slidery-target'
-      },
-      options
-    )
-    this.sliders = {}
-    this.activeSliders = {}
-    this.listeners = {}
-    const allTargets = [].slice
-      .call(document.querySelectorAll(`.${this.options.targetClassName}`))
-      .map(node => {
-        return {
-          node,
-          value: node.dataset.value,
-          precision: node.dataset.precision || 0,
-          separator: node.dataset.separator || ''
-        }
-      })
-    const slidersArray = [].slice.call(
-      document.querySelectorAll(`.${this.options.className}`)
-    )
-    slidersArray.forEach(node => {
-      const id = node.id || (Math.random() * 4000).toString()
-      const width = node.getBoundingClientRect().width
-      const targets = allTargets.filter(
-        ({ value }) =>
-          (value && value.indexOf(id) !== -1) || (!value && !node.id)
-      )
+export const evalFuncWithValues = (func, values) => {
+  const funcWithValues = Object.keys(values).reduce((tempFunc, id) => {
+    return tempFunc.replace(new RegExp(`\\[${id}\\]`, 'g'), values[id])
+  }, func)
+  return eval(funcWithValues)
+}
+
+const initFromHtml = options => {
+  const initOptions = Object.assign(
+    {},
+    {
+      className: 'slidery',
+      targetClassName: 'slidery-target'
+    },
+    options
+  )
+  const targetsArray = [].slice
+    .call(document.querySelectorAll(`.${initOptions.targetClassName}`))
+    .map(node => {
+      const precision = node.dataset.precision || 0
+      const separator = node.dataset.separator || ''
+
+      const source = node.dataset.value
+        ? node.dataset.value
+            .match(funcIdRegExp)
+            .map(match => match.replace(/\[?\]?/g, ''))
+            .reduce((sourceSet, id) => {
+              if (sourceSet.indexOf(id) === -1) {
+                return [...sourceSet, id]
+              }
+              return sourceSet
+            }, [])
+        : undefined
+
+      const onChange =
+        source && source.length > 1
+          ? values => {
+              node.innerHTML = formatValue(
+                evalFuncWithValues(node.dataset.value, values),
+                precision,
+                separator
+              )
+            }
+          : value => (node.innerHTML = formatValue(value, precision, separator))
+      return {
+        node,
+        source,
+        onSlidingStart: () => node.classList.add('slidery-is-sliding'),
+        onSlidingEnd: () => node.classList.remove('slidery-is-sliding'),
+        onChange
+      }
+    })
+  const slidersArray = [].slice
+    .call(document.querySelectorAll(`.${initOptions.className}`))
+    .map(node => {
       const range =
         node.dataset.range && /-?\d+\.\.\.-?\d+/.test(node.dataset.range)
           ? node.dataset.range.split('...').map(i => parseInt(i, 10))
-          : [0, width]
-      const scale = width / (range[1] - range[0])
+          : undefined
 
-      let initialValue, initialProgress
-      if (
-        node.dataset.initialValue &&
-        parseInt(node.dataset.initialValue, 10)
-      ) {
-        initialValue = parseInt(node.dataset.initialValue, 10)
-        if (initialValue < range[0]) initialValue = range[0]
-        if (initialValue > range[1]) initialValue = range[1]
-        initialProgress = (initialValue - range[0]) * scale
-      } else {
-        initialProgress = width / 2
-        initialValue = range[0] + initialProgress / scale
-      }
+      const value =
+        node.dataset.initialValue && parseInt(node.dataset.initialValue, 10)
 
-      const listeners = {
-        baseClick: this.handleBaseNodeClick(id),
-        liftMouseDown: this.handleLiftNodeMouseDown(id),
-        touchStart: this.handleLiftNodeTouchStart(id)
-      }
-      this.listeners[id] = listeners
-
-      const nodes = initNodes(node)
-      nodes.baseNode.addEventListener('click', listeners.baseClick)
-      nodes.liftNode.addEventListener('mousedown', listeners.liftMouseDown)
-      nodes.liftNode.addEventListener('touchstart', listeners.touchStart)
-
-      const liftPosition = initialProgress / width * 100
-      nodes.liftNode.style.left = `${liftPosition}%`
-      nodes.progressNode.style.width = `${liftPosition}%`
-
-      this.sliders[id] = {
-        id,
-        nodes,
-        targets,
-        width,
+      return {
+        element: node,
         range,
-        scale,
-        stepsCount: node.dataset.steps
-          ? parseInt(node.dataset.steps, 10)
-          : undefined,
-        value: initialValue,
-        progress: initialProgress
+        value,
+        id: node.id,
+        steps: node.dataset.steps ? parseInt(node.dataset.steps, 10) : undefined
       }
     })
+  if (slidersArray.length && targetsArray.length) {
+    new Slidery(slidersArray, targetsArray)
+  }
+}
+
+/*
+*  Slidery class
+*/
+
+export default class Slidery {
+  constructor(sliders, targets) {
+    this.sliders = {}
+    this.activeSliders = {}
+    this.listeners = {}
+
+    if (
+      !(
+        (Array.isArray(sliders) && sliders.length > 0) ||
+        typeof sliders === 'object'
+      )
+    ) {
+      return
+    }
+
+    const slidersArray = Array.isArray(sliders) ? sliders : [sliders]
+    const targetsArray =
+      Array.isArray(targets) && targets.length
+        ? targets
+        : typeof targets === 'object' ? [targets] : []
+    slidersArray
+      .filter(
+        slider => slider && (slidersArray.length === 1 ? true : !!slider.id)
+      )
+      .forEach(
+        ({
+          id = (Math.random() * 4000).toString(),
+          element,
+          range: initialRange,
+          value,
+          steps
+        }) => {
+          if (!element) return
+          const targets = targetsArray
+            .map(target => {
+              let source = target.source
+              if (typeof source === 'string') source = [source]
+              if (Number.isInteger(source)) source = [source.toString()]
+              if (
+                !(
+                  Array.isArray(source) ||
+                  source === undefined ||
+                  source === null
+                )
+              )
+                source = slidersArray.length === 1 ? [id] : undefined
+
+              return Object.assign({}, target, { source })
+            })
+            .filter(({ source }) => source && source.indexOf(id) !== -1)
+
+          const width = element.getBoundingClientRect().width
+          const range =
+            Array.isArray(initialRange) && initialRange.length === 2
+              ? initialRange
+              : [0, width]
+          const scale = width / (range[1] - range[0])
+
+          let initialValue, initialProgress
+          if (value) {
+            initialValue = value
+            if (initialValue < range[0]) initialValue = range[0]
+            if (initialValue > range[1]) initialValue = range[1]
+            initialProgress = (initialValue - range[0]) * scale
+          } else {
+            initialProgress = width / 2
+            initialValue = range[0] + initialProgress / scale
+          }
+
+          const listeners = {
+            baseClick: this.handleBaseNodeClick(id),
+            liftMouseDown: this.handleLiftNodeMouseDown(id),
+            touchStart: this.handleLiftNodeTouchStart(id)
+          }
+          this.listeners[id] = listeners
+
+          const nodes = initNodes(element)
+          nodes.baseNode.addEventListener('click', listeners.baseClick)
+          nodes.liftNode.addEventListener('mousedown', listeners.liftMouseDown)
+          nodes.liftNode.addEventListener('touchstart', listeners.touchStart)
+
+          const liftPosition = initialProgress / width * 100
+          nodes.liftNode.style.left = `${liftPosition}%`
+          nodes.progressNode.style.width = `${liftPosition}%`
+
+          this.sliders[id] = {
+            id,
+            nodes,
+            targets,
+            width,
+            range,
+            scale,
+            stepsCount: steps ? steps : undefined,
+            value: initialValue,
+            progress: initialProgress
+          }
+        }
+      )
 
     Object.values(this.sliders).forEach(slider => {
-      this.adjustTargets(slider.targets, slider.value)
+      this.adjustTargets(slider.targets, this.sliders)
     })
     window.addEventListener('resize', debounce(this.handleWindowResize, 300))
   }
@@ -183,9 +269,9 @@ class Slidery {
 
     document.body.classList.add('slidery-no-select-text')
     slider.nodes.liftNode.classList.add('slidery-is-sliding')
-    slider.targets.forEach(target => {
-      target.node.classList.add('slidery-is-sliding')
-    })
+    slider.targets.forEach(
+      target => target.onSlidingStart && target.onSlidingStart()
+    )
   }
   handleLiftNodeTouchStart = id => event => {
     const slider = this.sliders[id]
@@ -206,9 +292,9 @@ class Slidery {
 
     document.body.classList.add('slidery-no-select-text')
     slider.nodes.liftNode.classList.add('slidery-is-sliding')
-    slider.targets.forEach(target => {
-      target.node.classList.add('slidery-is-sliding')
-    })
+    slider.targets.forEach(
+      target => target.onSlidingStart && target.onSlidingStart()
+    )
   }
   handleMouseUp = id => event => {
     const activeSlider = this.activeSliders[id]
@@ -227,9 +313,9 @@ class Slidery {
     const slider = this.sliders[id]
     if (slider) {
       slider.nodes.liftNode.classList.remove('slidery-is-sliding')
-      slider.targets.forEach(target => {
-        target.node.classList.remove('slidery-is-sliding')
-      })
+      slider.targets.forEach(
+        target => target.onSlidingEnd && target.onSlidingEnd()
+      )
     }
   }
   handleTouchEnd = id => event => {
@@ -255,9 +341,9 @@ class Slidery {
     if (slider) {
       slider.nodes.liftNode.classList.remove('slidery-is-sliding')
       slider.tempValue = null
-      slider.targets.forEach(target => {
-        target.node.classList.remove('slidery-is-sliding')
-      })
+      slider.targets.forEach(
+        target => target.onSlidingEnd && target.onSlidingEnd()
+      )
     }
   }
   handleMouseMove = id => {
@@ -287,23 +373,16 @@ class Slidery {
   }
 
   // Helpers
-  adjustTargets = (targets, newValue) => {
-    targets.forEach(target => {
-      if (target.node) {
-        if (target.value) {
-          target.node.innerHTML = formatValue(
-            calculateValue(target.value, this.sliders),
-            target.precision,
-            target.separator
-          )
-        } else {
-          target.node.innerHTML = formatValue(
-            newValue,
-            target.precision,
-            target.separator
-          )
-        }
-      }
+  adjustTargets = (targets, sliders) => {
+    targets.forEach(({ onChange, source }) => {
+      onChange(
+        source.length === 1
+          ? sliders[source[0]].value
+          : source.filter(id => !!sliders[id]).reduce((values, id) => {
+              values[id] = sliders[id].value
+              return values
+            }, {})
+      )
     })
   }
   adjustSlider = (id, progress, setNewProgress = false) => {
@@ -326,10 +405,10 @@ class Slidery {
     if (setNewProgress) {
       slider.progress = newProgress
     }
-    this.adjustTargets(slider.targets, newValue)
+    this.adjustTargets(slider.targets, this.sliders)
   }
 }
 
 ;(function() {
-  new Slidery()
+  initFromHtml()
 })()
