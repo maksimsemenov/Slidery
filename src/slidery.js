@@ -33,14 +33,14 @@ const initNodes = node => {
   return { wrapperNode, baseNode, progressNode, liftNode }
 }
 
-const formatValue = (value, precision = 0, separator = '.') => {
+export const formatValue = (value, precision = 0, separator = '.') => {
   const formattedValue = value.toFixed(precision)
   if (separator !== '.') {
     return formattedValue.replace('.', separator)
   }
   return formattedValue
 }
-const debounce = (func, wait = 100) => {
+export const debounce = (func, wait = 100) => {
   let timer
   return (...args) => {
     if (timer) {
@@ -53,7 +53,7 @@ const debounce = (func, wait = 100) => {
 }
 const funcIdRegExp = /\[[\w-_\.]+\]/gi
 
-const getClosestStep = (value, range, stepsCount) => {
+export const getClosestStep = (value, range, stepsCount) => {
   const step = range / stepsCount
   return Math.round(value / step) * step
 }
@@ -265,18 +265,7 @@ export default class Slidery {
       initialScreenPosition: event.screenX,
       initialProgress: slider.progress
     }
-    const handleMove = this.handleMouseMove(id)
-    const handleUp = this.handleMouseUp(id)
-    this.listeners[id].mouseMove = handleMove
-    this.listeners[id].mouseUp = handleUp
-    document.addEventListener('mousemove', handleMove)
-    document.addEventListener('mouseup', handleUp)
-
-    document.body.classList.add('slidery-no-select-text')
-    slider.nodes.liftNode.classList.add('slidery-is-sliding')
-    slider.targets.forEach(
-      target => target.onSlidingStart && target.onSlidingStart()
-    )
+    this.initSliderBeforeSliding(id, 'mouse')
   }
   handleLiftNodeTouchStart = id => event => {
     const slider = this.sliders[id]
@@ -288,18 +277,7 @@ export default class Slidery {
       touchId: touch.identifier,
       initialProgress: slider.progress
     }
-    const handleTouchMove = this.handleTouchMove(id)
-    const handleTouchEnd = this.handleTouchEnd(id)
-    this.listeners[id].mouseMove = handleTouchMove
-    this.listeners[id].mouseUp = handleTouchEnd
-    document.addEventListener('touchmove', handleTouchMove)
-    document.addEventListener('touchend', handleTouchEnd)
-
-    document.body.classList.add('slidery-no-select-text')
-    slider.nodes.liftNode.classList.add('slidery-is-sliding')
-    slider.targets.forEach(
-      target => target.onSlidingStart && target.onSlidingStart()
-    )
+    this.initSliderBeforeSliding(id, 'touch')
   }
   handleMouseUp = id => event => {
     const activeSlider = this.activeSliders[id]
@@ -308,20 +286,7 @@ export default class Slidery {
     const { initialProgress, initialScreenPosition } = activeSlider
     const progress = initialProgress + event.screenX - initialScreenPosition
     this.adjustSlider(id, progress, true)
-
-    this.activeSliders[id] = null
-    if (this.listeners[id]) {
-      document.removeEventListener('mousemove', this.listeners[id].mouseMove)
-      document.addEventListener('mouseup', this.listeners[id].mouseUp)
-    }
-    document.body.classList.remove('slidery-no-select-text')
-    const slider = this.sliders[id]
-    if (slider) {
-      slider.nodes.liftNode.classList.remove('slidery-is-sliding')
-      slider.targets.forEach(
-        target => target.onSlidingEnd && target.onSlidingEnd()
-      )
-    }
+    this.cleanupSliderAfterSliding(id, 'mouse')
   }
   handleTouchEnd = id => event => {
     const activeSlider = this.activeSliders[id]
@@ -335,21 +300,7 @@ export default class Slidery {
 
     const progress = initialProgress + touch.screenX - initialScreenPosition
     this.adjustSlider(id, progress, true)
-
-    this.activeSliders[id] = null
-    if (this.listeners[id]) {
-      document.removeEventListener('mousemove', this.listeners[id].mouseMove)
-      document.addEventListener('mouseup', this.listeners[id].mouseUp)
-    }
-    document.body.classList.remove('slidery-no-select-text')
-    const slider = this.sliders[id]
-    if (slider) {
-      slider.nodes.liftNode.classList.remove('slidery-is-sliding')
-      slider.tempValue = null
-      slider.targets.forEach(
-        target => target.onSlidingEnd && target.onSlidingEnd()
-      )
-    }
+    this.cleanupSliderAfterSliding(id, 'touch')
   }
   handleMouseMove = id => {
     const activeSlider = this.activeSliders[id]
@@ -378,6 +329,53 @@ export default class Slidery {
   }
 
   // Helpers
+  initSliderBeforeSliding = (id, handlerType) => {
+    const moveHandlerName = handlerType === 'mouse' ? 'MouseMove' : 'TouchMove'
+    const stopHandlerName = handlerType === 'mouse' ? 'MouseUp' : 'TouchEnd'
+
+    const handleMove = this[`handle${moveHandlerName}`](id)
+    const handleStop = this[`handle${stopHandlerName}`](id)
+    this.listeners[id][moveHandlerName.toLowerCase()] = handleMove
+    this.listeners[id][stopHandlerName.toLowerCase()] = handleStop
+    document.addEventListener(moveHandlerName.toLowerCase(), handleMove)
+    document.addEventListener(stopHandlerName.toLowerCase(), handleStop)
+
+    document.body.classList.add('slidery-no-select-text')
+    const slider = this.sliders[id]
+    if (slider) {
+      slider.nodes.liftNode.classList.add('slidery-is-sliding')
+      slider.targets.forEach(
+        target => target.onSlidingStart && target.onSlidingStart()
+      )
+    }
+  }
+  cleanupSliderAfterSliding = (id, handlerType) => {
+    this.activeSliders[id] = null
+    const listeners = this.listeners[id]
+    if (listeners) {
+      const moveHandlerName = `${handlerType}move`
+      const stopHandlerName = handlerType === 'mouse' ? 'mouseup' : 'touchend'
+      listeners[moveHandlerName] &&
+        document.removeEventListener(
+          moveHandlerName,
+          listeners[moveHandlerName]
+        )
+      listeners[stopHandlerName] &&
+        document.removeEventListener(
+          stopHandlerName,
+          listeners[stopHandlerName]
+        )
+      this.listeners[id] = {}
+    }
+    document.body.classList.remove('slidery-no-select-text')
+    const slider = this.sliders[id]
+    if (slider) {
+      slider.nodes.liftNode.classList.remove('slidery-is-sliding')
+      slider.targets.forEach(
+        target => target.onSlidingEnd && target.onSlidingEnd()
+      )
+    }
+  }
   adjustTargets = (targets, sliders) => {
     targets.forEach(({ onChange, source }) => {
       onChange(
