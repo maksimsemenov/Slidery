@@ -1,0 +1,733 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Slidery calls mouse handlers on sliding 1`] = `
+Object {
+  "baseNode": <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>,
+  "liftNode": <div
+    class="slidery-lift slidery-is-sliding"
+    style="left: 50%;"
+  />,
+  "progressNode": <div
+    class="slidery-progress"
+    style="width: 50%;"
+  />,
+  "wrapperNode": <div
+    class="slidery"
+    data-range="600...1200"
+    id="first"
+  >
+    <div
+      class="slidery-base"
+    >
+      <div
+        class="slidery-base__target"
+      />
+    </div>
+    <div
+      class="slidery-progress"
+      style="width: 50%;"
+    />
+    <div
+      class="slidery-lift slidery-is-sliding"
+      style="left: 50%;"
+    />
+  </div>,
+}
+`;
+
+exports[`Slidery calls mouse handlers on sliding 2`] = `
+Object {
+  "baseNode": <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>,
+  "liftNode": <div
+    class="slidery-lift"
+    style="left: 66.66666666666666%;"
+  />,
+  "progressNode": <div
+    class="slidery-progress"
+    style="width: 66.66666666666666%;"
+  />,
+  "wrapperNode": <div
+    class="slidery"
+    data-range="600...1200"
+    id="first"
+  >
+    <div
+      class="slidery-base"
+    >
+      <div
+        class="slidery-base__target"
+      />
+    </div>
+    <div
+      class="slidery-progress"
+      style="width: 66.66666666666666%;"
+    />
+    <div
+      class="slidery-lift"
+      style="left: 66.66666666666666%;"
+    />
+  </div>,
+}
+`;
+
+exports[`Slidery calls touch handlers on sliding 1`] = `
+Object {
+  "baseNode": <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>,
+  "liftNode": <div
+    class="slidery-lift slidery-is-sliding"
+    style="left: 50%;"
+  />,
+  "progressNode": <div
+    class="slidery-progress"
+    style="width: 50%;"
+  />,
+  "wrapperNode": <div
+    class="slidery"
+    data-range="600...1200"
+    id="first"
+  >
+    <div
+      class="slidery-base"
+    >
+      <div
+        class="slidery-base__target"
+      />
+    </div>
+    <div
+      class="slidery-progress"
+      style="width: 50%;"
+    />
+    <div
+      class="slidery-lift slidery-is-sliding"
+      style="left: 50%;"
+    />
+  </div>,
+}
+`;
+
+exports[`Slidery calls touch handlers on sliding 2`] = `
+Object {
+  "baseNode": <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>,
+  "liftNode": <div
+    class="slidery-lift"
+    style="left: 66.66666666666666%;"
+  />,
+  "progressNode": <div
+    class="slidery-progress"
+    style="width: 66.66666666666666%;"
+  />,
+  "wrapperNode": <div
+    class="slidery"
+    data-range="600...1200"
+    id="first"
+  >
+    <div
+      class="slidery-base"
+    >
+      <div
+        class="slidery-base__target"
+      />
+    </div>
+    <div
+      class="slidery-progress"
+      style="width: 66.66666666666666%;"
+    />
+    <div
+      class="slidery-lift"
+      style="left: 66.66666666666666%;"
+    />
+  </div>,
+}
+`;
+
+exports[`Slidery inits correctly from code 1`] = `
+Object {
+  "first": Object {
+    "id": "first",
+    "nodes": Object {
+      "baseNode": <div
+        class="slidery-base"
+      >
+        <div
+          class="slidery-base__target"
+        />
+      </div>,
+      "liftNode": <div
+        class="slidery-lift"
+        style="left: 50%;"
+      />,
+      "progressNode": <div
+        class="slidery-progress"
+        style="width: 50%;"
+      />,
+      "wrapperNode": <div
+        class="slidery"
+        id="first"
+      >
+        <div
+          class="slidery-base"
+        >
+          <div
+            class="slidery-base__target"
+          />
+        </div>
+        <div
+          class="slidery-progress"
+          style="width: 50%;"
+        />
+        <div
+          class="slidery-lift"
+          style="left: 50%;"
+        />
+      </div>,
+    },
+    "progress": 300,
+    "range": Array [
+      0,
+      600,
+    ],
+    "scale": 1,
+    "stepsCount": undefined,
+    "targets": Array [
+      Object {
+        "node": <div
+          class="slidery-target"
+          data-precision="2"
+          data-separator=","
+          data-value="[first] + 2 * [second]"
+        >
+          500,00
+        </div>,
+        "onChange": [Function],
+        "onSlidingEnd": [Function],
+        "onSlidingStart": [Function],
+        "source": Array [
+          "first",
+          "second",
+        ],
+      },
+    ],
+    "value": 300,
+    "width": 600,
+  },
+  "second": Object {
+    "id": "second",
+    "nodes": Object {
+      "baseNode": <div
+        class="slidery-base"
+      >
+        <div
+          class="slidery-base__target"
+        />
+      </div>,
+      "liftNode": <div
+        class="slidery-lift"
+        style="left: 0%;"
+      />,
+      "progressNode": <div
+        class="slidery-progress"
+        style="width: 0%;"
+      />,
+      "wrapperNode": <div
+        class="slidery"
+        data-initial-value="100"
+        data-range="100...300"
+        data-steps="6"
+        id="second"
+      >
+        <div
+          class="slidery-base"
+        >
+          <div
+            class="slidery-base__target"
+          />
+        </div>
+        <div
+          class="slidery-progress"
+          style="width: 0%;"
+        />
+        <div
+          class="slidery-lift"
+          style="left: 0%;"
+        />
+      </div>,
+    },
+    "progress": 0,
+    "range": Array [
+      100,
+      300,
+    ],
+    "scale": 3,
+    "stepsCount": 6,
+    "targets": Array [
+      Object {
+        "node": <div
+          class="slidery-target"
+          data-precision="2"
+          data-separator=","
+          data-value="[first] + 2 * [second]"
+        >
+          500,00
+        </div>,
+        "onChange": [Function],
+        "onSlidingEnd": [Function],
+        "onSlidingStart": [Function],
+        "source": Array [
+          "first",
+          "second",
+        ],
+      },
+    ],
+    "value": 100,
+    "width": 600,
+  },
+}
+`;
+
+exports[`Slidery inits correctly from code 2`] = `
+<div
+  class="slidery"
+  id="first"
+>
+  <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>
+  <div
+    class="slidery-progress"
+    style="width: 50%;"
+  />
+  <div
+    class="slidery-lift"
+    style="left: 50%;"
+  />
+</div>
+`;
+
+exports[`Slidery inits correctly from code 3`] = `
+<div
+  class="slidery"
+  data-initial-value="100"
+  data-range="100...300"
+  data-steps="6"
+  id="second"
+>
+  <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>
+  <div
+    class="slidery-progress"
+    style="width: 0%;"
+  />
+  <div
+    class="slidery-lift"
+    style="left: 0%;"
+  />
+</div>
+`;
+
+exports[`Slidery inits correctly from html 1`] = `
+Object {
+  "first": Object {
+    "id": "first",
+    "nodes": Object {
+      "baseNode": <div
+        class="slidery-base"
+      >
+        <div
+          class="slidery-base__target"
+        />
+      </div>,
+      "liftNode": <div
+        class="slidery-lift"
+        style="left: 50%;"
+      />,
+      "progressNode": <div
+        class="slidery-progress"
+        style="width: 50%;"
+      />,
+      "wrapperNode": <div
+        class="slidery"
+        id="first"
+      >
+        <div
+          class="slidery-base"
+        >
+          <div
+            class="slidery-base__target"
+          />
+        </div>
+        <div
+          class="slidery-progress"
+          style="width: 50%;"
+        />
+        <div
+          class="slidery-lift"
+          style="left: 50%;"
+        />
+      </div>,
+    },
+    "progress": 300,
+    "range": Array [
+      0,
+      600,
+    ],
+    "scale": 1,
+    "stepsCount": undefined,
+    "targets": Array [
+      Object {
+        "node": <div
+          class="slidery-target"
+          data-precision="2"
+          data-separator=","
+          data-value="[first] + 2 * [second]"
+        >
+          500,00
+        </div>,
+        "onChange": [Function],
+        "onSlidingEnd": [Function],
+        "onSlidingStart": [Function],
+        "source": Array [
+          "first",
+          "second",
+        ],
+      },
+    ],
+    "value": 300,
+    "width": 600,
+  },
+  "second": Object {
+    "id": "second",
+    "nodes": Object {
+      "baseNode": <div
+        class="slidery-base"
+      >
+        <div
+          class="slidery-base__target"
+        />
+      </div>,
+      "liftNode": <div
+        class="slidery-lift"
+        style="left: 0%;"
+      />,
+      "progressNode": <div
+        class="slidery-progress"
+        style="width: 0%;"
+      />,
+      "wrapperNode": <div
+        class="slidery"
+        data-initial-value="100"
+        data-range="100...300"
+        data-steps="6"
+        id="second"
+      >
+        <div
+          class="slidery-base"
+        >
+          <div
+            class="slidery-base__target"
+          />
+        </div>
+        <div
+          class="slidery-progress"
+          style="width: 0%;"
+        />
+        <div
+          class="slidery-lift"
+          style="left: 0%;"
+        />
+      </div>,
+    },
+    "progress": 0,
+    "range": Array [
+      100,
+      300,
+    ],
+    "scale": 3,
+    "stepsCount": 6,
+    "targets": Array [
+      Object {
+        "node": <div
+          class="slidery-target"
+          data-precision="2"
+          data-separator=","
+          data-value="[first] + 2 * [second]"
+        >
+          500,00
+        </div>,
+        "onChange": [Function],
+        "onSlidingEnd": [Function],
+        "onSlidingStart": [Function],
+        "source": Array [
+          "first",
+          "second",
+        ],
+      },
+    ],
+    "value": 100,
+    "width": 600,
+  },
+}
+`;
+
+exports[`Slidery inits correctly from html 2`] = `
+<div
+  class="slidery"
+  id="first"
+>
+  <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>
+  <div
+    class="slidery-progress"
+    style="width: 50%;"
+  />
+  <div
+    class="slidery-lift"
+    style="left: 50%;"
+  />
+</div>
+`;
+
+exports[`Slidery inits correctly from html 3`] = `
+<div
+  class="slidery"
+  data-initial-value="100"
+  data-range="100...300"
+  data-steps="6"
+  id="second"
+>
+  <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>
+  <div
+    class="slidery-progress"
+    style="width: 0%;"
+  />
+  <div
+    class="slidery-lift"
+    style="left: 0%;"
+  />
+</div>
+`;
+
+exports[`getSlidersFromHtml returns correct array of sliders 1`] = `
+Array [
+  Object {
+    "element": <div
+      class="slidery"
+      id="first"
+    />,
+    "id": "first",
+    "range": undefined,
+    "steps": undefined,
+    "value": undefined,
+  },
+  Object {
+    "element": <div
+      class="slidery"
+      data-initial-value="300"
+      data-range="100...300"
+      data-steps="6"
+      id="second"
+    />,
+    "id": "second",
+    "range": Array [
+      100,
+      300,
+    ],
+    "steps": 6,
+    "value": 300,
+  },
+]
+`;
+
+exports[`getTargetsFromHtml returns correct array of sliders 1`] = `
+Array [
+  Object {
+    "node": <div
+      class="slidery-target"
+    />,
+    "onChange": [Function],
+    "onSlidingEnd": [Function],
+    "onSlidingStart": [Function],
+    "source": undefined,
+  },
+  Object {
+    "node": <div
+      class="slidery-target"
+      data-precision="2"
+      data-separator=","
+      data-value="[fisrt] + 2 * [second]"
+    />,
+    "onChange": [Function],
+    "onSlidingEnd": [Function],
+    "onSlidingStart": [Function],
+    "source": Array [
+      "fisrt",
+      "second",
+    ],
+  },
+]
+`;
+
+exports[`initNodes inits correct nodes if original mode is empty 1`] = `
+Object {
+  "baseNode": <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>,
+  "liftNode": <div
+    class="slidery-lift"
+  />,
+  "progressNode": <div
+    class="slidery-progress"
+  />,
+  "wrapperNode": <div
+    class="slidery"
+    id="first"
+  >
+    <div
+      class="slidery-base"
+    >
+      <div
+        class="slidery-base__target"
+      />
+    </div>
+    <div
+      class="slidery-progress"
+    />
+    <div
+      class="slidery-lift"
+    />
+  </div>,
+}
+`;
+
+exports[`initNodes inits correct nodes if original mode is empty 2`] = `
+<div
+  class="slidery"
+  id="first"
+>
+  <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>
+  <div
+    class="slidery-progress"
+  />
+  <div
+    class="slidery-lift"
+  />
+</div>
+`;
+
+exports[`initNodes it does not create duplicate nodes if original mode is not empty 1`] = `
+Object {
+  "baseNode": <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>,
+  "liftNode": <div
+    class="slidery-lift"
+  />,
+  "progressNode": <div
+    class="slidery-progress"
+  />,
+  "wrapperNode": <div
+    class="slidery"
+    id="first"
+  >
+    
+        
+    
+      
+    <div
+      class="slidery-base"
+    >
+      <div
+        class="slidery-base__target"
+      />
+    </div>
+    <div
+      class="slidery-progress"
+    />
+    <div
+      class="slidery-lift"
+    />
+  </div>,
+}
+`;
+
+exports[`initNodes it does not create duplicate nodes if original mode is not empty 2`] = `
+<div
+  class="slidery"
+  id="first"
+>
+  
+        
+  
+      
+  <div
+    class="slidery-base"
+  >
+    <div
+      class="slidery-base__target"
+    />
+  </div>
+  <div
+    class="slidery-progress"
+  />
+  <div
+    class="slidery-lift"
+  />
+</div>
+`;

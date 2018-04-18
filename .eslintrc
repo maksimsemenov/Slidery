@@ -1,0 +1,33 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": { "ecmaVersion": 6 },
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest/globals": true
+  },
+  "globals": {
+    "Promise": true
+  },
+  "plugins": ["jest"],
+  "rules": {
+    "no-undefined": 0,
+    "no-debugger": "warn",
+    "no-unused-vars": "warn",
+    "no-unused-labels": "warn",
+    "no-console": "warn",
+    "no-irregular-whitespace": "warn",
+    "no-var": 0,
+    "arrow-spacing": "warn",
+    "func-call-spacing": ["warn", "never"],
+    "no-class-assign": 0,
+    "object-curly-spacing": ["warn", "always"],
+    "import/no-webpack-loader-syntax": 0,
+    "no-useless-escape": 0,
+    "strict": 0,
+    "radix": 0,
+    "operator-assignment": 0,
+    "no-extra-semi": 0
+  }
+}

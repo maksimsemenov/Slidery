@@ -1,6 +1,6 @@
 import './slidery.less'
 
-const initNodes = node => {
+export const initNodes = node => {
   const wrapperNode = node
   let baseNode = wrapperNode.querySelector('.slidery-base')
   let progressNode = wrapperNode.querySelector('.slidery-progress')
@@ -34,6 +34,7 @@ const initNodes = node => {
 }
 
 export const formatValue = (value, precision = 0, separator = '.') => {
+  if (value === undefined || value === null) return ''
   const formattedValue = value.toFixed(precision)
   if (separator !== '.') {
     return formattedValue.replace('.', separator)
@@ -54,6 +55,8 @@ export const debounce = (func, wait = 100) => {
 const funcIdRegExp = /\[[\w-_\.]+\]/gi
 
 export const getClosestStep = (value, range, stepsCount) => {
+  if (!value) return 0
+  if (!(stepsCount && range)) return value
   const step = range / stepsCount
   return Math.round(value / step) * step
 }
@@ -62,75 +65,74 @@ export const evalFuncWithValues = (func, values) => {
   const funcWithValues = Object.keys(values).reduce((tempFunc, id) => {
     return tempFunc.replace(new RegExp(`\\[${id}\\]`, 'g'), values[id])
   }, func)
-  return eval(funcWithValues)
+
+  try {
+    return eval(funcWithValues)
+  } catch (e) {
+    return undefined
+  }
 }
 
-const initFromHtml = options => {
-  const initOptions = Object.assign(
-    {},
-    {
-      className: 'slidery',
-      targetClassName: 'slidery-target'
-    },
-    options
-  )
-  const targetsArray = [].slice
-    .call(document.querySelectorAll(`.${initOptions.targetClassName}`))
-    .map(node => {
-      const precision = node.dataset.precision || 0
-      const separator = node.dataset.separator || ''
-
-      const source = node.dataset.value
-        ? node.dataset.value
-            .match(funcIdRegExp)
-            .map(match => match.replace(/\[?\]?/g, ''))
-            .reduce((sourceSet, id) => {
-              if (sourceSet.indexOf(id) === -1) {
-                return [...sourceSet, id]
-              }
-              return sourceSet
-            }, [])
+export const getSlidersFromHtml = (className = 'slidery') =>
+  [].slice.call(document.querySelectorAll(`.${className}`)).map(node => {
+    const range =
+      node.dataset.range && /-?\d+\.\.\.-?\d+/.test(node.dataset.range)
+        ? node.dataset.range.split('...').map(i => parseInt(i, 10))
         : undefined
 
-      const onChange =
-        source && source.length > 1
-          ? values => {
-              node.innerHTML = formatValue(
-                evalFuncWithValues(node.dataset.value, values),
-                precision,
-                separator
-              )
+    const value =
+      node.dataset.initialValue && parseInt(node.dataset.initialValue, 10)
+
+    return {
+      element: node,
+      range,
+      value,
+      id: node.id,
+      steps: node.dataset.steps ? parseInt(node.dataset.steps, 10) : undefined
+    }
+  })
+
+export const getTargetsFromHtml = (className = 'slidery-target') =>
+  [].slice.call(document.querySelectorAll(`.${className}`)).map(node => {
+    const precision = node.dataset.precision || 0
+    const separator = node.dataset.separator || ''
+
+    const source = node.dataset.value
+      ? node.dataset.value
+          .match(funcIdRegExp)
+          .map(match => match.replace(/\[?\]?/g, ''))
+          .reduce((sourceSet, id) => {
+            if (sourceSet.indexOf(id) === -1) {
+              return [...sourceSet, id]
             }
-          : value => (node.innerHTML = formatValue(value, precision, separator))
-      return {
-        node,
-        source,
-        onSlidingStart: () => node.classList.add('slidery-is-sliding'),
-        onSlidingEnd: () => node.classList.remove('slidery-is-sliding'),
-        onChange
-      }
-    })
-  const slidersArray = [].slice
-    .call(document.querySelectorAll(`.${initOptions.className}`))
-    .map(node => {
-      const range =
-        node.dataset.range && /-?\d+\.\.\.-?\d+/.test(node.dataset.range)
-          ? node.dataset.range.split('...').map(i => parseInt(i, 10))
-          : undefined
+            return sourceSet
+          }, [])
+      : undefined
 
-      const value =
-        node.dataset.initialValue && parseInt(node.dataset.initialValue, 10)
+    const onChange =
+      source && source.length > 1
+        ? values => {
+            node.innerHTML = formatValue(
+              evalFuncWithValues(node.dataset.value, values),
+              precision,
+              separator
+            )
+          }
+        : value => (node.innerHTML = formatValue(value, precision, separator))
+    return {
+      node,
+      source,
+      onSlidingStart: () => node.classList.add('slidery-is-sliding'),
+      onSlidingEnd: () => node.classList.remove('slidery-is-sliding'),
+      onChange
+    }
+  })
 
-      return {
-        element: node,
-        range,
-        value,
-        id: node.id,
-        steps: node.dataset.steps ? parseInt(node.dataset.steps, 10) : undefined
-      }
-    })
+export const initFromHtml = (sliderClass, targetClass) => {
+  const slidersArray = getSlidersFromHtml(sliderClass)
+  const targetsArray = getTargetsFromHtml(targetClass)
   if (slidersArray.length && targetsArray.length) {
-    new Slidery(slidersArray, targetsArray)
+    return new Slidery(slidersArray, targetsArray)
   }
 }
 
@@ -140,18 +142,17 @@ const initFromHtml = options => {
 
 export default class Slidery {
   constructor(sliders, targets) {
-    this.sliders = {}
-    this.activeSliders = {}
-    this.listeners = {}
-
     if (
       !(
         (Array.isArray(sliders) && sliders.length > 0) ||
         typeof sliders === 'object'
       )
     ) {
-      return
+      return undefined
     }
+    this.sliders = {}
+    this.activeSliders = {}
+    this.listeners = {}
 
     const slidersArray = Array.isArray(sliders) ? sliders : [sliders]
     const targetsArray =
@@ -255,7 +256,11 @@ export default class Slidery {
 
   // Handers
   handleBaseNodeClick = id => event => {
-    const progress = event.offsetX
+    let progress = event.offsetX
+    if (progress === undefined || progress === null) {
+      const left = event.target.getBoundingClientRect().left
+      progress = event.clientX - left
+    }
     this.adjustSlider(id, progress, true)
   }
   handleLiftNodeMouseDown = id => event => {
@@ -270,7 +275,8 @@ export default class Slidery {
   handleLiftNodeTouchStart = id => event => {
     const slider = this.sliders[id]
     if (!slider) return
-    const touch = event.targetTouches.length && event.targetTouches.item(0)
+    const touches = [].slice.call(event.targetTouches)
+    const touch = touches.length && touches[0]
     if (!touch) return
     this.activeSliders[id] = {
       initialScreenPosition: touch.screenX,
@@ -378,6 +384,7 @@ export default class Slidery {
   }
   adjustTargets = (targets, sliders) => {
     targets.forEach(({ onChange, source }) => {
+      if (!(onChange && Array.isArray(source))) return
       onChange(
         source.length === 1
           ? sliders[source[0]].value
