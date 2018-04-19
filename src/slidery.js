@@ -418,7 +418,3 @@ export default class Slidery {
     this.adjustTargets(slider.targets, this.sliders)
   }
 }
-
-;(function() {
-  initFromHtml()
-})()

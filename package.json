@@ -1,16 +1,22 @@
 {
-  "name": "minary",
-  "version": "1.0.0",
+  "name": "slidery",
+  "version": "1.0.0-rc1",
   "main": "index.js",
-  "repository": {},
-  "author": "maksimsemenov <maksa.semenov@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maksimsemenov/slidery"
+  },
+  "author": {
+    "name": "Maksim Semenov",
+    "email": "maksa.semenov@gmail.com",
+    "url": "http://maxsemenov.com"
+  },
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack --config webpack.config.prod.js",
     "build:watch": "webpack --config webpack.config.prod.js --watch",
-    "test": "jest",
-    "test:watch": "jest --watch --coverage"
+    "test": "jest"
   },
   "devDependencies": {
     "autoprefixer": "^8.1.0",
@@ -43,28 +49,19 @@
         "env",
         {
           "targets": {
-            "browsers": [
-              "last 4 versions"
-            ]
+            "browsers": ["last 4 versions"]
           }
         }
       ]
     ],
-    "plugins": [
-      "transform-class-properties"
-    ]
+    "plugins": ["transform-class-properties"]
   },
   "jest": {
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   },
-  "browserslist": [
-    ">1%",
-    "last 4 versions",
-    "Firefox ESR",
-    "not ie < 9"
-  ],
+  "browserslist": [">1%", "last 4 versions", "Firefox ESR", "not ie < 9"],
   "prettier": {
     "semi": false,
     "singleQuote": true,
