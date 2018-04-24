@@ -1,7 +1,11 @@
 {
   "name": "slidery",
   "description": "A simple way to add interactive slider to your website",
-  "keywords": ["slider", "drag slider", "touch slidery"],
+  "keywords": [
+    "slider",
+    "drag slider",
+    "touch slidery"
+  ],
   "version": "1.0.0-rc1",
   "repository": {
     "type": "git",
@@ -30,6 +34,7 @@
     "clean": "rimraf dist",
     "build": "npm run clean && node build.js",
     "test": "jest",
+    "test:watch": "jest --watch",
     "prepublish": "npm run test && npm run build"
   },
   "devDependencies": {
@@ -43,6 +48,7 @@
     "eslint": "^4.18.1",
     "eslint-plugin-jest": "^21.15.0",
     "jest": "^22.4.2",
+    "jest-cli": "^22.4.3",
     "less": "^3.0.1",
     "postcss-load-config": "^1.2.0",
     "prettier": "^1.11.1",
@@ -62,11 +68,19 @@
         }
       ]
     ],
-    "plugins": ["transform-class-properties"],
+    "plugins": [
+      "transform-class-properties"
+    ],
     "env": {
       "test": {
-        "presets": [["env"]],
-        "plugins": ["transform-class-properties"]
+        "presets": [
+          [
+            "env"
+          ]
+        ],
+        "plugins": [
+          "transform-class-properties"
+        ]
       }
     }
   },
@@ -75,7 +89,12 @@
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   },
-  "browserslist": [">1%", "last 4 versions", "Firefox ESR", "not ie < 9"],
+  "browserslist": [
+    ">1%",
+    "last 4 versions",
+    "Firefox ESR",
+    "not ie < 9"
+  ],
   "prettier": {
     "semi": false,
     "singleQuote": true,
@@ -85,5 +104,8 @@
     "plugins": {
       "autoprefixer": {}
     }
+  },
+  "dependencies": {
+    "npm": "^6.0.0"
   }
 }
