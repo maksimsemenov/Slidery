@@ -84,7 +84,7 @@ export const getSlidersFromHtml = (className = 'slidery') =>
       node.dataset.initialValue && parseInt(node.dataset.initialValue, 10)
 
     return {
-      element: node,
+      node,
       range,
       value,
       id: node.id,
@@ -166,12 +166,12 @@ export default class Slidery {
       .forEach(
         ({
           id = (Math.random() * 4000).toString(),
-          element,
+          node,
           range: initialRange,
           value,
           steps
         }) => {
-          if (!element) return
+          if (!node) return
           const targets = targetsArray
             .map(target => {
               let source = target.source
@@ -190,7 +190,7 @@ export default class Slidery {
             })
             .filter(({ source }) => source && source.indexOf(id) !== -1)
 
-          const width = element.getBoundingClientRect().width
+          const width = node.getBoundingClientRect().width
           const range =
             Array.isArray(initialRange) && initialRange.length === 2
               ? initialRange
@@ -215,7 +215,7 @@ export default class Slidery {
           }
           this.listeners[id] = listeners
 
-          const nodes = initNodes(element)
+          const nodes = initNodes(node)
           nodes.baseNode.addEventListener('click', listeners.baseClick)
           nodes.liftNode.addEventListener('mousedown', listeners.liftMouseDown)
           nodes.liftNode.addEventListener('touchstart', listeners.touchStart)
