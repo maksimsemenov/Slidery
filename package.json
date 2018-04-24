@@ -1,7 +1,8 @@
 {
   "name": "slidery",
+  "description": "A simple way to add interactive slider to your website",
+  "keywords": ["slider", "drag slider", "touch slidery"],
   "version": "1.0.0-rc1",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/maksimsemenov/slidery"
